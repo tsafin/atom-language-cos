@@ -1,0 +1,399 @@
+{
+  "fileTypes": [
+    "rtn",
+    "mac",
+    "inc",
+    "ro"
+  ],
+  "firstLineMatch": "^^.*^^~Format=Cache\b",
+  "name": "Caché ObjectScript",
+  "patterns": [
+    {
+      "include": "#command"
+    },
+    {
+      "include": "#set-expression"
+    },
+    {
+      "include": "#preprocessor"
+    },
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#block-sql"
+    },
+    {
+      "include": "#block-html"
+    },
+    {
+      "include": "#block-js"
+    },
+    {
+      "include": "#old"
+    }
+  ],
+  "repository": {
+    "block-comment": {
+      "begin": "\\s/\\*",
+      "end": "\\*/",
+      "name": "comment.block.source.isc.cos"
+    },
+    "block-html": {
+      "begin": "(\\&html\\<)",
+      "beginCaptures": {
+        "1": {
+          "name": "support.source.isc.cos"
+        }
+      },
+      "end": "(\\>)",
+      "endCaptures": {
+        "1": {
+          "name": "support.source.isc.cos"
+        }
+      },
+      "patterns": [
+        {
+          "include": "text.html.basic"
+        }
+      ]
+    },
+    "block-js": {
+      "begin": "(\\&js\\<)",
+      "beginCaptures": {
+        "1": {
+          "name": "support.source.isc.cos"
+        }
+      },
+      "end": "(\\>)",
+      "endCaptures": {
+        "1": {
+          "name": "support.source.isc.cos"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.js"
+        }
+      ]
+    },
+    "block-sql": {
+      "begin": "(\\&sql\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "support.source.isc.cos"
+        }
+      },
+      "end": "(\\))",
+      "endCaptures": {
+        "1": {
+          "name": "support.source.isc.cos"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.sql"
+        }
+      ]
+    },
+    "command": {
+      "patterns": [
+        {
+          "include": "#command-set"
+        },
+        {
+          "include": "#command-kill"
+        }
+      ]
+    },
+    "command-kill": {
+      "patterns": [
+        {
+          "include": "#command-kill-noargs"
+        },
+        {
+          "include": "#command-kill-paren-list"
+        },
+        {
+          "include": "#command-kill-var-list"
+        }
+      ]
+    },
+    "command-kill-noargs": {
+      "captures": {
+        "1": {
+          "name": "keyword.operator.source.isc.cos"
+        }
+      },
+      "match": "\\s+((?i)KILL|K)((\\s(?=\\s))|(\\s*$))"
+    },
+    "command-kill-paren-list": {
+      "begin": "\\s+((?i)KILL|K)\\s(?=\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.operator.source.isc.cos"
+        }
+      },
+      "end": "(?<=\\))",
+      "patterns": [
+        {
+          "include": "#lvar-list"
+        }
+      ]
+    },
+    "command-kill-var-list": {
+      "begin": "\\s+((?i)KILL|K)\\s(?!\\s)",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.operator.source.isc.cos"
+        }
+      },
+      "end": "\\s$",
+      "patterns": [
+        {
+          "include": "#command"
+        },
+        {
+          "include": "#lvar-or-lvar-list"
+        }
+      ]
+    },
+    "command-set": {
+      "begin": "\\s+((?i)SET|S)\\s",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.operator.source.isc.cos"
+        }
+      },
+      "end": "$",
+      "patterns": [
+        {
+          "include": "#set-expression"
+        },
+        {
+          "include": "#lvar-or-lvar-list"
+        }
+      ]
+    },
+    "comment": {
+      "patterns": [
+        {
+          "include": "#line-comment"
+        },
+        {
+          "include": "#block-comment"
+        }
+      ]
+    },
+    "control": {
+      "match": "(?<=\\s)((?i)IF|I|WHILE|FOR|F|TRY|CATCH|ELSE|E|ELSEIF)(?=\\s)",
+      "name": "keyword.control.source.isc.cos"
+    },
+    "directive-define": {
+      "captures": {
+        "1": {
+          "name": "keyword.control.source.isc.cos"
+        },
+        "2": {
+          "name": "keyword.other.source.isc.cos"
+        }
+      },
+      "match": "^\\s+((?i)#define)\\s+([A-Za-z][A-Za-z0-9]*)\\s+"
+    },
+    "directive-include": {
+      "captures": {
+        "1": {
+          "name": "keyword.control.source.isc.cos"
+        },
+        "2": {
+          "name": "entity.type.name.source.isc.cos"
+        }
+      },
+      "match": "^\\s+((?i)#include)\\s+([A-Za-z][A-Za-z0-9]*)\\s+"
+    },
+    "function": {
+      "comment": "$function",
+      "match": "(\\$[A-Za-z]+)\\b",
+      "name": "entity.name.function.source.isc.cos"
+    },
+    "global": {
+      "match": "\\^([A-Za-z%][A-Za-z0-9]*)",
+      "name": "variable.language.source.isc.cos"
+    },
+    "keyword-class": {
+      "captures": {
+        "1": {
+          "name": "support.class.source.isc.cos"
+        },
+        "3": {
+          "name": "variable.language.source.isc.cos"
+        }
+      },
+      "match": "(##(?i)CLASS)(\\()(([A-Za-z%][A-Za-z0-9]*)(\\.[A-Za-z%][A-Za-z0-9]*)*)(\\))"
+    },
+    "line-comment": {
+      "match": "\\s(//|;).*$",
+      "name": "comment.line.source.isc.cos"
+    },
+    "literal-number": {
+      "match": "(?<=[^A-Za-z0-9\\\"])([0-9]*\\.?[0-9]+)(?=[^A-Z-a-z0-9\\\"])",
+      "name": "constant.numeric.source.isc.cos"
+    },
+    "literal-string": {
+      "match": "\\\".*?\\\"",
+      "name": "string.quoted.double.source.isc.cos"
+    },
+    "lvar": {
+      "patterns": [
+        {
+          "include": "#variable"
+        }
+      ]
+    },
+    "lvar-list": {
+      "begin": "\\G\\(\\s*",
+      "end": "\\s*\\)",
+      "patterns": [
+        {
+          "include": "#lvar-list-item"
+        }
+      ]
+    },
+    "lvar-list-item": {
+      "begin": "(?<=\\()|,",
+      "end": "(?=\\)|,)",
+      "patterns": [
+        {
+          "include": "#lvar"
+        }
+      ]
+    },
+    "lvar-or-lvar-list": {
+      "begin": "\\G",
+      "end": "\\s*(?=(=)|\\s)|$",
+      "patterns": [
+        {
+          "include": "#lvar-list"
+        },
+        {
+          "include": "#lvar"
+        }
+      ]
+    },
+    "macro": {
+      "match": "(\\$\\$\\$[A-Za-z][A-Za-z0-9]*)(\\(.*\\))?",
+      "name": "keyword.other.source.isc.cos"
+    },
+    "old": {
+      "patterns": [
+        {
+          "include": "#old-command"
+        },
+        {
+          "include": "#control"
+        },
+        {
+          "include": "#function"
+        },
+        {
+          "include": "#tag-definition"
+        },
+        {
+          "include": "#tag-value"
+        },
+        {
+          "include": "#macro"
+        },
+        {
+          "include": "#keyword-class"
+        },
+        {
+          "include": "#oref-dot-property"
+        },
+        {
+          "include": "#literal-number"
+        },
+        {
+          "include": "#literal-string"
+        }
+      ]
+    },
+    "old-command": {
+      "comment": "<command>",
+      "match": "(?<=\\s)((?i)SET|S|DO|D|KILL|K|GOTO|G|READ|R|WRITE|W|OPEN|O|USE|U|CLOSE|C|CONTINUE|FOR|F|HALT|HANG|H|JOB|J|LOCK|L|MERGE|M|NEW|N|QUIT|Q|RETURN|RET|TSTART|TS|TCOMMIT|TC|TROLLBACK|TR|THROW|VIEW|V|XECUTE|X|ZKILL|ZK|ZNSPACE|ZN|ZTRAP|ZWRITE|ZW|ZZDUMP|ZZWRITE)(?=\\s)",
+      "name": "keyword.operator.source.isc.cos"
+    },
+    "oref-dot-property": {
+      "captures": {
+        "3": {
+          "name": "variable.other.source.isc.cos"
+        },
+        "5": {
+          "name": "support.function.source.isc.cos"
+        }
+      },
+      "match": "((\\.)|([A-Za-z%][A-Za-z0-9]*))(\\.([A-Za-z%][A-Za-z0-9]*))+"
+    },
+    "preprocessor": {
+      "patterns": [
+        {
+          "include": "#directive-include"
+        },
+        {
+          "include": "#directive-define"
+        }
+      ]
+    },
+    "set-expression": {
+      "begin": "(=)\\s*",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.operator.source.isc"
+        }
+      },
+      "end": "$",
+      "patterns": [
+        {
+          "include": "$base"
+        },
+        {
+          "include": "#value-string"
+        },
+        {
+          "include": "#value-numeric"
+        },
+        {
+          "include": "#variable"
+        }
+      ]
+    },
+    "tag-definition": {
+      "match": "^([A-Za-z][A-Za-z0-9]*)\\b",
+      "name": "entity.name.function.source.isc.cos"
+    },
+    "tag-value": {
+      "captures": {
+        "1": {
+          "name": "entity.name.tag.source.isc.cos"
+        },
+        "2": {
+          "name": "entity.name.section.source.isc.cos"
+        }
+      },
+      "match": "(\\$\\$[A-Za-z%][A-Za-z0-9]*)(\\^[A-Za-z%][A-Za-z0-9.]*)?"
+    },
+    "value-numeric": {
+      "match": "([0-9]*.?[0-9]+)",
+      "name": "constant.numeric.source.isc.cos"
+    },
+    "value-string": {
+      "match": "\\\".*?\\\"",
+      "name": "string.quoted.source.isc.cos"
+    },
+    "variable": {
+      "match": "\\^?([A-Za-z%][A-Za-z0-9]*)",
+      "name": "variable.language.source.isc.cos"
+    }
+  },
+  "scopeName": "source.isc.cos"
+}

@@ -1,0 +1,648 @@
+'fileTypes': [
+  'cls'
+]
+'firstLineMatch': '\\s*((?i)Include|Class|///)'
+'name': 'Caché Class'
+'patterns': [
+  {
+    'include': '#include-directive'
+  }
+  {
+    'include': '#field-comment'
+  }
+  {
+    'include': '#class-definition'
+  }
+  {
+    'begin': '\\{'
+    'comment': 'Class Block'
+    'end': '\\}'
+    'patterns': [
+      {
+        'include': '#field-comment'
+      }
+      {
+        'include': '#block-comment'
+      }
+      {
+        'include': '#line-comment'
+      }
+      {
+        'include': '#property-definition'
+      }
+      {
+        'include': '#parameter-definition'
+      }
+      {
+        'include': '#method-definition'
+      }
+      {
+        'include': '#index-definition'
+      }
+      {
+        'include': '#fk-definition'
+      }
+      {
+        'include': 'text.xml'
+      }
+    ]
+  }
+]
+'repository':
+  'block-comment':
+    'begin': '/\\*'
+    'comment': '/* */ comments'
+    'end': '\\*/'
+    'name': 'comment.block.source.isc.udl}'
+  'block-cos':
+    'begin': '\\{'
+    'comment': 'Cache ObjectScript block'
+    'end': '\\}'
+    'patterns': [
+      {
+        'include': '#cos'
+      }
+    ]
+  'block-js':
+    'begin': '\\{'
+    'comment': 'Javascript method body'
+    'end': '\\}'
+    'patterns': [
+      {
+        'include': '#js'
+      }
+    ]
+  'block-sql':
+    'begin': '\\{'
+    'comment': 'SQL Query block'
+    'end': '\\}'
+    'patterns': [
+      {
+        'include': 'source.sql'
+      }
+    ]
+  'block-xml':
+    'begin': '\\{'
+    'comment': 'is this an XData block?'
+    'end': '\\}'
+    'patterns': [
+      {
+        'include': '#xdata-style'
+      }
+      {
+        'include': 'text.xml'
+      }
+    ]
+  'class-definition':
+    'begin': '^\\s*((?i)Class)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'support.class.source.isc.udl'
+    'comment': 'Class Definition Line'
+    'end': '$'
+    'name': 'illegal.invalid.source.isc.udl'
+    'patterns': [
+      {
+        'include': '#keyword-extends'
+      }
+      {
+        'include': '#member-attr-list'
+      }
+      {
+        'include': '#type-name'
+      }
+    ]
+  'clientmethod-definition':
+    'begin': '^\\s*((?i)ClientMethod)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'storage.type.source.isc.udl'
+    'comment': 'ClientMethod Definition Line'
+    'end': '(?<=\\})'
+    'patterns': [
+      {
+        'include': '#generic-method-definition'
+      }
+      {
+        'include': '#block-js'
+      }
+    ]
+  'cos':
+    'comment': 'COS syntax highlighting'
+    'patterns': [
+      {
+        'include': '#block-cos'
+      }
+      {
+        'include': 'source.isc.cos'
+      }
+      {
+        'include': '$self'
+      }
+    ]
+  'cosmethod-definition':
+    'begin': '^\\s*((?i)ClassMethod|Method|Trigger)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'storage.type.source.isc.udl'
+    'comment': 'Method/ClassMethod Definition Line'
+    'end': '(?<=\\})'
+    'patterns': [
+      {
+        'include': '#generic-method-definition'
+      }
+      {
+        'include': '#block-cos'
+      }
+    ]
+  'field-comment':
+    'comment': 'Field comments (triple slash)'
+    'match': '^\\s*///.*$'
+    'name': 'comment.block.documentation.source.isc.udl'
+  'fk-definition':
+    'begin': '\\s*(ForeignKey)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'storage.type.source.isc.udl'
+    'comment': 'Foriegn Key Definition Line'
+    'end': '\\s*;\\s*$'
+    'patterns': [
+      {
+        'begin': '\\s\\b'
+        'end': '\\s'
+        'patterns': [
+          {
+            'include': '#fk-type'
+          }
+        ]
+      }
+      {
+        'begin': '\\b((?i)References)\\b'
+        'beginCaptures':
+          '1':
+            'name': 'keyword.control.source.isc.udl'
+        'end': '(?=\\[|;|$)'
+        'patterns': [
+          {
+            'include': '#fk-type'
+          }
+        ]
+      }
+    ]
+  'fk-type':
+    'captures':
+      '1':
+        'name': 'keyword.operator.source.isc.udl'
+      '2':
+        'name': 'keyword.operator.source.isc.udl'
+      '3':
+        'name': 'entity.name.source.isc.udl'
+    'match': '(\\%|\\b)([A-Za-z0-9]*)\\(([A-Za-z\\%][A-Za-z0-9]*)\\)'
+  'generic-method-definition':
+    'begin': '\\G\\s*([A-Za-z%][A-Za-z0-9]*)\\s*'
+    'beginCaptures':
+      '1':
+        'name': 'entity.name.type.source.isc.udl'
+    'comment': 'Generic Method Definition Line (name, parameters, return type and attributes)'
+    'end': '$'
+    'patterns': [
+      {
+        'include': '#member-attr-list'
+      }
+      {
+        'include': '#method-parameter-list'
+      }
+      {
+        'include': '#keyword-as'
+      }
+    ]
+  'include-directive':
+    'begin': '^\\s*((?i)Include)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.control.source.isc.udl'
+    'comment': '#include directive'
+    'end': '$'
+    'patterns': [
+      {
+        'include': '#type-name-list'
+      }
+      {
+        'include': '#type-name'
+      }
+    ]
+  'index-definition':
+    'begin': '^\\s*((?i)Index)\\s+([A-Z-a-z%][A-Za-z0-9.]*)'
+    'beginCaptures':
+      '1':
+        'name': 'storage.type.source.isc.udl'
+      '2':
+        'name': 'entity.name.type.source.isc.udl'
+    'comment': 'Index Definition Line'
+    'end': '$'
+    'patterns': [
+      {
+        'include': '#member-attr-list'
+      }
+      {
+        'include': '#keyword-on'
+      }
+      {
+        'match': ';'
+        'name': 'keyword.operator.source.isc.udl'
+      }
+    ]
+  'index-field':
+    'comment': false
+  'js':
+    'patterns': [
+      {
+        'include': '#block-js'
+      }
+      {
+        'include': 'source.js'
+      }
+      {
+        'include': '$self'
+      }
+    ]
+  'keyword-as':
+    'begin': '\\b((?i)As)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.operator.source.isc.udl'
+    'comment': 'As <type>'
+    'end': '(?=\\[|;|=|,|\\)|$)'
+    'patterns': [
+      {
+        'include': '#type-attr-list'
+      }
+      {
+        'include': '#type-name'
+      }
+    ]
+  'keyword-extends':
+    'begin': '\\b((?i)Extends)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.control.source.isc.udl'
+    'comment': 'Extends Classname'
+    'end': '(?=\\[)|$'
+    'name': 'keyword.operator.source.isc.udl'
+    'patterns': [
+      {
+        'include': '#type-name-list'
+      }
+      {
+        'include': '#type-name'
+      }
+    ]
+  'keyword-on':
+    'begin': '\\b((?i)On)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.operator.source.isc.udl'
+    'comment': '<index> On <field-list>'
+    'end': '(?=\\[|;)|$'
+    'patterns': [
+      {
+        'include': '#type-name-list'
+      }
+      {
+        'include': '#type-name'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'storage.modifier.source.isc.udl'
+          '2':
+            'name': 'storage.modifier.source.isc.udl'
+        'comment': 'index on collection'
+        'match': '\\((KEYS)\\)|\\((ELEMENTS)\\)'
+        'name': 'keyword.operator.source.isc.udl'
+      }
+    ]
+  'line-comment':
+    'comment': '//comment'
+    'match': '^\\s*//.*'
+    'name': 'comment.line.double-slash.source.isc.udl'
+  'member-attr':
+    'begin': '(\\[|\\G)'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.operator.source.isc.udl'
+    'comment': 'attr=value'
+    'end': '(,|\\])'
+    'endCaptures':
+      '1':
+        'name': 'keyword.operator.source.isc.udl'
+    'patterns': [
+      {
+        'begin': '\\s*(=)\\s*'
+        'beginCaptures':
+          '1':
+            'name': 'keyword.operator.source.isc.udl'
+        'comment': 'attr value'
+        'end': '(?=,|\\s|\\])|$'
+        'patterns': [
+          {
+            'include': '#value-string'
+          }
+          {
+            'include': '#value-literal'
+          }
+          {
+            'include': '#sql-expression'
+          }
+          {
+            'match': '[A-Za-z_][A-Za-z0-9_]+'
+            'name': 'entity.type.name.source.isc.udl'
+          }
+        ]
+      }
+      {
+        'comment': 'attr name'
+        'match': '\\b[A-Za-z][A-Za-z0-9 ]+\\b'
+        'name': 'storage.modifier.source.isc.udl'
+      }
+    ]
+  'member-attr-list':
+    'begin': '(?=\\[)'
+    'comment': [
+      'attr=value'
+    ]
+    'end': '(?<=\\])'
+    'patterns': [
+      {
+        'include': '#member-attr'
+      }
+    ]
+  'member-name':
+    'comment': '<member name>'
+    'match': '(\\b|%)([A-Za-z][A-Za-z0-9]*)\\b'
+    'name': 'entity.name.type.source.isc.udl'
+  'member-name-list':
+    'begin': '\\('
+    'comment': '(<type1>,<type2>)'
+    'end': '\\)'
+    'name': 'keyword.operator.source.isc.udl'
+    'patterns': [
+      {
+        'include': '#member-name'
+      }
+    ]
+  'method-block':
+    'begin': '\\{'
+    'comment': 'Method Block'
+    'end': '(?<=\\})'
+    'patterns': [
+      {
+        'include': '#block-xml'
+      }
+      {
+        'include': '#block-sql'
+      }
+      {
+        'include': '#block-cos'
+      }
+      {
+        'include': '#block-js'
+      }
+    ]
+  'method-definition':
+    'patterns': [
+      {
+        'include': '#query-definition'
+      }
+      {
+        'include': '#clientmethod-definition'
+      }
+      {
+        'include': '#cosmethod-definition'
+      }
+      {
+        'include': '#xdata-definition'
+      }
+    ]
+  'method-parameter':
+    'begin': '(\\(|\\G)'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.operator.source.isc.udl'
+    'comment': '<parm> As <type>=<value>'
+    'end': '(\\))|(,)'
+    'endCaptures':
+      '1':
+        'name': 'keyword.operator.source.isc.udl'
+      '2':
+        'name': 'keyword.operator.source.isc.udl'
+    'patterns': [
+      {
+        'include': '#parameter-value'
+      }
+      {
+        'include': '#keyword-as'
+      }
+      {
+        'include': '#member-name'
+      }
+    ]
+  'method-parameter-list':
+    'begin': '(?=\\()'
+    'comment': 'method (<parms>,<parm>)'
+    'end': '(?<=\\))'
+    'patterns': [
+      {
+        'include': '#method-parameter'
+      }
+    ]
+  'parameter-definition':
+    'begin': '^\\s*((?i)Parameter)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'storage.type..source.isc.udl'
+    'comment': 'Parameter Definition Line'
+    'end': '$'
+    'patterns': [
+      {
+        'include': '#parameter-value'
+      }
+      {
+        'include': '#keyword-as'
+      }
+      {
+        'include': '#member-name'
+      }
+      {
+        'match': ';'
+        'name': 'keyword.operator.source.isc.udl'
+      }
+    ]
+  'parameter-value':
+    'begin': '(=)\\s*'
+    'beginCaptures':
+      '1':
+        'name': 'keyword.operator.source.isc.udl'
+    'comment': '<parm>=<value>'
+    'end': '(?=,|;|\\s|\\))|$'
+    'patterns': [
+      {
+        'include': '#value-string'
+      }
+      {
+        'include': '#value-literal'
+      }
+      {
+        'include': '#value-expression'
+      }
+    ]
+  'property-definition':
+    'begin': '^\\s*((?i)Property|Relationship)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'storage.type.source.isc.udl'
+    'comment': 'Property Definition Line'
+    'end': '$'
+    'patterns': [
+      {
+        'include': '#member-attr-list'
+      }
+      {
+        'include': '#keyword-as'
+      }
+      {
+        'include': '#member-name'
+      }
+      {
+        'match': ';'
+        'name': 'keyword.operator.source.isc.udl'
+      }
+    ]
+  'query-definition':
+    'begin': '^\\s*((?i)Query)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'storage.type.source.isc.udl'
+    'comment': 'Query Definition Line'
+    'end': '(?<=\\})'
+    'patterns': [
+      {
+        'include': '#generic-method-definition'
+      }
+      {
+        'include': '#block-sql'
+      }
+    ]
+  'sql-expression':
+    'begin': '\\{'
+    'comment': 'SQLComputeCode, RetrievalCode, etc.'
+    'end': '\\}'
+    'patterns': [
+      {
+        'captures':
+          '1':
+            'name': 'variable.source.isc.udl'
+        'match': '\\{\\s*([A-Za-z_%][A-Za-z0-9_]*)\\s*\\}'
+      }
+      {
+        'include': '#cos'
+      }
+    ]
+  'type-attr':
+    'begin': '([A-Za-z]+)\\s*((=)\\s*)'
+    'beginCaptures':
+      '1':
+        'name': 'storage.modifier.source.isc.udl'
+      '3':
+        'name': 'keyword.operator.source.isc.udl'
+    'end': '\\,|\\)'
+    'patterns': [
+      {
+        'include': '#value-expression'
+      }
+      {
+        'include': '#value-string'
+      }
+      {
+        'include': '#value-literal'
+      }
+      {
+        'include': '#type-name'
+      }
+    ]
+  'type-attr-list':
+    'begin': '\\('
+    'end': '(?<=\\))'
+    'name': 'keyword.operator.source.isc.udl'
+    'patterns': [
+      {
+        'include': '#type-attr'
+      }
+    ]
+  'type-name':
+    'comment': '<class name>'
+    'match': '(\\b|%)([A-Za-z][A-Za-z0-9.]*)\\b'
+    'name': 'entity.name.type.source.isc.udl'
+  'type-name-list':
+    'begin': '\\s\\('
+    'comment': '(<type1>,<type2>)'
+    'end': '\\)'
+    'name': 'keyword.operator.source.isc.udl'
+    'patterns': [
+      {
+        'include': '#type-name'
+      }
+    ]
+  'value-expression':
+    'begin': '\\{'
+    'comment': '{<expression>}'
+    'end': '\\}'
+    'patterns': [
+      {
+        'include': '#cos'
+      }
+    ]
+  'value-literal':
+    'comment': 'numeric constant'
+    'match': '([0-9]+\\.?[0-9]*)|(\\.[0-9]+)'
+    'name': 'constant.numeric.source.isc.udl'
+  'value-string':
+    'comment': 'quoted string'
+    'match': '(\\".*?\\")+'
+    'name': 'string.quoted.double.source.isc.udl'
+  'xdata-definition':
+    'begin': '^\\s*((?i)XData)\\b'
+    'beginCaptures':
+      '1':
+        'name': 'storage.type.source.isc.udl'
+    'comment': 'ClientMethod Definition Line'
+    'end': '(?<=\\})'
+    'patterns': [
+      {
+        'include': '#xdata-definition-line'
+      }
+      {
+        'include': '#block-xml'
+      }
+    ]
+  'xdata-definition-line':
+    'begin': '\\G\\s*([A-Za-z%][A-Za-z0-9]*)\\s*'
+    'beginCaptures':
+      '1':
+        'name': 'entity.name.type.source.isc.udl'
+    'end': '$'
+    'patterns': [
+      {
+        'include': '#member-attr-list'
+      }
+    ]
+  'xdata-style':
+    'begin': '(?<=\\<style type=\\"text/css\\"\\>)'
+    'comment': 'XData Style block for inline ZEN CSS'
+    'end': '(?=\\</style\\>)'
+    'patterns': [
+      {
+        'include': 'source.css'
+      }
+    ]
+'scopeName': 'source.source.isc.udl'
